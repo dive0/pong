@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>Pong</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script>
+    <script>
+        var paddleX1 //x coordinate for the bottom rectangle
+        var ballX; //x coordinate for the ball
+        var ballY; //y coordinate for the ball
+        var ballSpeedX = 0 //speed for the ball going on the x axis
+        var ballSpeedY = 0 //speed for the ball going on the y axis
+        var paddleHeight = 30; //height of the bottom rectangles
+        var paddleWidth = 200 //width of the bottom rectangle
+        var paddleWidth1 = 200 //width of the top rectangle
+
+        function setup() {
+            createCanvas(700,500); //canvas size
+            noCursor(); //not showing the mouse cursor in the canvas
+            ballX = random(width); //ball start at the 
+            ballY = height/2; // middle of canvas
+            paddleX1 = width/2; //location of the bottom recatngle is on the middle of the width
+        }
+
+        function draw() {
+            background(128); //setting the background to gray
+            moveBall(); // calling the function for moving the ball
+            checkCollide(); //calling the function for checking if the ball is at a certain location
+            drawPaddle(); //calling the function for drawing the rectangle on the bottom of the canvas
+            drawBall(); //calling the function for drawing the ellipse
+            keyPressed(); //calling the function for when a key is pressed
+        }
+
+        function moveBall() {
+            ballX = ballX + ballSpeedX; //increase the location
+            ballY = ballY + ballSpeedY; //and speed of the ball
+
+            //writing the loaction of the ball in the console
+            console.log("ballSpeedX: " + ballSpeedX + 
+                               ", ballSpeedY: " + ballSpeedY); 
+        }
+
+        function checkCollide() {
+            if (ballX < 0 || ballX > width) { //when the x coordinate of the ball is less than 0 or greater than the canvas width
+                ballSpeedX = ballSpeedX * -1; //ball will bounce back in
+            }
+            if (ballY > height - paddleHeight - 20) { //when ball is higher than the bottom retangle
+                if (ballX < paddleX1 + paddleWidth/2 && ballX > paddleX1 - paddleWidth/2) { //when ball touches the bottom rectangle
+                    ballSpeedY = ballSpeedY * -1; // ball bounces back up
+                    ballSpeedY -= 2 // The ball speed increase when going up
+                    paddleWidth -= 3 // the width of the bottom rectangle shrinks
+                }
+                if(ballX > paddleX1 - paddleWidth/2){ // when ball is on the right side of the center of the bottom rectangle
+                    ballSpeedX *= -1 //the ball bounce up either to the right or left
+                }
+                if(ballX < paddleX1 + paddleWidth/2){ // when ball is on the left side of the center of the bottom rectangle
+                    ballSpeedX *= -1 //the ball bounce up either to the right or left
+                }
+            }
+            if(ballY < paddleHeight + 40){ // when ball is lower than the top rectangle
+                if(ballX < mouseX + paddleWidth1/2 && ballX > mouseX - paddleWidth1/2){ // when ball touches the top rectangle
+                    ballSpeedY = ballSpeedY ++ // ball bounces back down
+                    ballSpeedY +=2 // the ball speed increase when going down
+                    paddleWidth1 -= 1 // the width of the top rectangle shrinks
+                }
+                if(ballX > mouseX - paddleWidth1/2 - 4){ // when ball is on the right side of the center of the top rectangle
+                    ballSpeedX *= -1 //the ball bounce down either to the right or left
+                }
+                if(ballX < mouseX + paddleWidth1/2 + 4){ // when ball is on the left side of the center of the top rectangle
+                    ballSpeedX *= -1 //the ball bounce down either to the right or left
+                }
+            }
+            if (ballY < 0) { //when the y coordinate of the ball is less than 0
+                // game over and code stop
+                text("GAME OVER! Player 1 Win!", width / 2, height / 2);
+                noLoop(); 
+            }
+            if(ballY > height) { //when the y coordiante of the ball is greater than the canvas height
+                // game over and code stop
+                text("GAME OVER! Player 2 Win!", width / 2, height / 2);
+                noLoop();
+            }
+        }
+
+        function drawBall() {
+            fill(random(255),random(255),random(255)) //changes the color of the ball randomly
+            noStroke(); //there will be no outline around the ball
+            ellipse(ballX, ballY, 20, 20); //the ball
+        }
+
+        function drawPaddle() {
+            paddleX1 = constrain(paddleX1,0,width) //the bottom rectangle can't get out of the canvas
+            fill(random(255),random(255),random(255)) //changes the color of the bottom rectangle randomly
+            rectMode(CENTER) // the coordinates given to the rectangles will be it's center point
+            strokeWeight(4); //the outline will be size 4
+            rect(paddleX1, height - paddleHeight - 4, paddleWidth, paddleHeight); // the bottom rectangle
+            fill(random(255),random(255),random(255)) //changes the color of the top rectangle randomly
+            rect(mouseX, paddleHeight + 4, paddleWidth1, paddleHeight) // the top rectangle
+        }
+        function mousePressed(){
+            // the ball will start to move
+            ballSpeedX = 5
+            ballSpeedY = 5
+        }
+        
+        function keyPressed(){
+            if(key == "a"){ // when a is pressed
+                paddleX1 -= 10 //bottom rectangle will move to the left
+            }
+            if(key == "d"){ // when d is pressed
+                paddleX1 += 10 //bottom rectangle will move to the right
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div id="code" class="container-fluid">
+        <script src="https://gist-it.appspot.com/github/dive0/p5js/blob/gh-pages/pong-remix.html?footer=0"></script>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(window).bind("load", function() {
+            $('#code').before($('#defaultCanvas0').remove());
+        });
+    </script>
+<form><input TYPE="button" onClick="history
+    .go(0)" value="Reset"></form>
+</body>
+
+</html>
+
